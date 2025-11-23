@@ -1,75 +1,85 @@
 <?php
-    $page = 'Orders';
+$page = "Orders";
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Orders</title>
-    <style>
-        body { font-family: Arial; }
+<!doctype html>
+<html lang="en">
 
-        .search-area {
-            margin: 20px 0;
-        }
+<?php 
+include 'component/head.php';
+?>
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            border: 1px solid #aaa;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background: #e6e6e6;
-        }
-    </style>
-</head>
 <body>
 
-<h2>Order Page</h2>
-
-<!-- Search Bar -->
-<div class="search-area">
-    <form method="GET">
-        <input type="text" name="search" placeholder="Search orders..."
-               value="<?= isset($_GET['search']) ? $_GET['search'] : '' ?>"
-               style="padding: 6px; width: 250px;">
-        <button type="submit" style="padding: 6px;">Search</button>
-    </form>
-</div>
-
-<?php
-$search = isset($_GET['search']) ? $_GET['search'] : "";
-$orders = getAllOrders($search);
+<?php 
+include 'component/nav.php';
 ?>
 
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Customer</th>
-        <th>Date</th>
-        <th>SubTotal</th>
-        <th>Tax</th>
-        <th>Total</th>
-    </tr>
+<div class="container-fluid">
+  <div class="row">
 
-    <?php foreach ($orders as $row): ?>
-        <tr>
-            <td><?= $row['inv_number'] ?></td>
-            <td><?= $row['customer_name'] ?></td>
-            <td><?= strtoupper(date("d M Y", strtotime($row['inv_date']))) ?></td>
-            <td><?= number_format($row['inv_subtotal'], 2) ?></td>
-            <td><?= number_format($row['inv_tax'], 2) ?></td>
-            <td><?= number_format($row['inv_total'], 2) ?></td>
-        </tr>
-    <?php endforeach; ?>
+    <!-- SIDEBAR -->
+    <?php include 'component/sidebar.php'; ?>
 
-</table>
+    <?php
+    // Load orders function
+    include 'functions/order.php';
+
+    $search = isset($_GET['search']) ? $_GET['search'] : "";
+    $orders = getAllOrders($search);
+    ?>
+
+    <!-- MAIN CONTENT -->
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Orders</h1>
+      </div>
+
+      <!-- SEARCH BAR -->
+      <form method="GET" class="form-inline mb-3">
+        <input type="text" 
+               name="search" 
+               class="form-control mr-2" 
+               placeholder="Search orders..."
+               value="<?= htmlspecialchars($search) ?>">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+
+      <!-- ORDERS TABLE -->
+      <div class="table-responsive mt-3">
+        <table class="table table-striped table-sm text-center">
+          <thead class="thead-light">
+            <tr>
+              <th>ID</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>SubTotal</th>
+              <th>Tax</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <?php foreach ($orders as $row): ?>
+              <tr>
+                <td><?= $row['inv_number'] ?></td>
+                <td><?= $row['customer_name'] ?></td>
+                <td><?= strtoupper(date("d M Y", strtotime($row['inv_date']))) ?></td>
+                <td><?= number_format($row['inv_subtotal'], 2) ?></td>
+                <td><?= number_format($row['inv_tax'], 2) ?></td>
+                <td><?= number_format($row['inv_total'], 2) ?></td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+
+        </table>
+      </div>
+
+    </main>
+
+  </div>
+</div>
+
+<script src="js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
